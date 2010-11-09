@@ -28,7 +28,7 @@ func TestWildcardQuestionMark(t *testing.T) {
 	WriteFile(fs, "bar", []byte("bar contents"))
 	WriteFile(fs, "baz", []byte("baz contents"))
 	files := findFiles(fs, "", "ba?")
-	checkFileList(t, []string{"bar","baz"}, files)
+	checkFileList(t, []string{"bar", "baz"}, files)
 }
 
 func TestWildcardStar(t *testing.T) {
@@ -37,7 +37,7 @@ func TestWildcardStar(t *testing.T) {
 	WriteFile(fs, "bar", []byte("bar contents"))
 	WriteFile(fs, "baz", []byte("baz contents"))
 	files := findFiles(fs, "", "b*")
-	checkFileList(t, []string{"bar","baz"}, files)
+	checkFileList(t, []string{"bar", "baz"}, files)
 }
 
 func TestWildcardSubDir(t *testing.T) {
@@ -47,7 +47,7 @@ func TestWildcardSubDir(t *testing.T) {
 	WriteFile(fs, "src/bar", []byte("bar contents"))
 	WriteFile(fs, "src/baz", []byte("baz contents"))
 	files := findFiles(fs, "", "src/b*")
-	checkFileList(t, []string{"src/bar","src/baz"}, files)
+	checkFileList(t, []string{"src/bar", "src/baz"}, files)
 }
 
 func TestWildcardBaseDir(t *testing.T) {
@@ -57,7 +57,7 @@ func TestWildcardBaseDir(t *testing.T) {
 	WriteFile(fs, "src/bar", []byte("bar contents"))
 	WriteFile(fs, "src/baz", []byte("baz contents"))
 	files := findFiles(fs, "src/", "b*")
-	checkFileList(t, []string{"bar","baz"}, files)
+	checkFileList(t, []string{"bar", "baz"}, files)
 }
 
 func TestWildcardDoubleStar(t *testing.T) {
@@ -67,7 +67,7 @@ func TestWildcardDoubleStar(t *testing.T) {
 	WriteFile(fs, "src/main/bar", []byte("bar contents"))
 	WriteFile(fs, "src/main/go/baz", []byte("baz contents"))
 	files := findFiles(fs, "src/", "**/b*")
-	checkFileList(t, []string{"src/main/bar","src/main/go/baz"}, files)
+	checkFileList(t, []string{"src/main/bar", "src/main/go/baz"}, files)
 }
 
 func checkFileList(t *testing.T, expectedList []string, actualList []string) {
