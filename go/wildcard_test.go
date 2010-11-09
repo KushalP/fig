@@ -81,3 +81,17 @@ func checkFileList(t *testing.T, expectedList []string, actualList []string) {
 		}
 	}
 }
+
+func TestWildcardCheck(t *testing.T) {
+    WildcardCheck(t, true, wildcardMatch("baz", "ba*"))
+}
+
+func TestWildcardCheck2(t *testing.T) {
+    WildcardCheck(t, false, wildcardMatch("buzz", "ba*"))
+}
+
+func WildcardCheck(t *testing.T, expectedVal bool, actualVal bool) {
+    if expectedVal != actualVal {
+        t.Fatalf("expected: %v, got %v", expectedVal, actualVal)
+    }
+}
