@@ -20,7 +20,7 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
 
 // Matches a given string against a wildcard pattern
 func wildcardMatch(text string, pattern string) bool {
-    cards := strings.Split(pattern, "*", 2000);
+    cards := strings.Split(pattern, "*", -1);
 
     for _, str := range cards {
         idx := strings.Index(text, str)
