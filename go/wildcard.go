@@ -5,32 +5,55 @@ import "fmt"
 
 func findFiles(fs FileSystem, baseDir string, pattern string) []string {
     var fsArr []string
-    modifiers := []string{"?", "*"}
+    var pattArr []string
 
-    // We're using a wildcard
-    if strings.Contains(pattern, modifiers[0]) || strings.Contains(pattern, modifiers[1]) {
-        // Wildcard matching method here
-        pattArr := strings.Split(pattern, "/", -1)
-        fsArr, _ = fs.List(baseDir)
-
-        if len(fsArr) <= 0 {
-            fsArr, _ = fs.List(pattArr[0])
-        }
-
-        return recursiveMatch(fsArr, pattArr, 0)
+    // Wildcard matching method here
+    if strings.Contains(pattern, "/") {
+        pattArr = strings.Split(pattern, "/", -1)
     } else {
-        // Not using a wildcard
-        if fs.Exists(pattern) {
-            return []string{strings.Trim(pattern, "")}
-        }
+        pattArr = []string{pattern}
     }
 
-	return []string{}
+    fsArr, _ = fs.List(baseDir)
+
+    if len(fsArr) <= 0 {
+        fsArr, _ = fs.List(pattArr[0])
+    }
+
+    fmt.Println("--- NEW FIND...")
+    fmt.Println("fsArr:", fsArr)
+    fmt.Println("pattArr:", pattArr)
+
+    matches := recursiveMatch(fsArr, pattArr, 0)
+
+    if baseDir != "" {
+        var retArr []string
+
+        for _, m := range matches {
+            retArr = append(retArr, strings.TrimLeft(m, baseDir + "/"))
+        }
+
+        return retArr
+    }
+
+    return matches
 }
 
 // Matches a given string against a wildcard pattern
 func wildcardMatch(text string, pattern string) bool {
-    cards := strings.Split(pattern, "*", -1);
+    var cards []string
+
+    starCards := strings.Split(pattern, "*", -1);
+
+    for _, sc := range starCards {
+        scQuestionMark := strings.Split(sc, "?", -1)
+
+        for _, splitSc := range scQuestionMark {
+            cards = append(cards, splitSc)
+        }
+    }
+
+    fmt.Println("WC Cards:", cards)
 
     for _, str := range cards {
         idx := strings.Index(text, str)
@@ -39,7 +62,7 @@ func wildcardMatch(text string, pattern string) bool {
             return false
         }
 
-        text = strings.TrimLeft(text, str + "*")
+        text = strings.TrimLeft(text, str)
     }
 
     return true
@@ -51,33 +74,26 @@ func recursiveMatch(fsArr []string, pArr []string, pPos int) []string {
     fmt.Println("pPos: \t", pPos)
 
     var retArr []string
-    var pClean string
 
     // Track the differences in fsArr length
     fsArrLen := len(fsArr)
 
-    if pPos == len(pArr) {
+    if pPos >= len(pArr) {
         return fsArr
     }
 
-    for i := 0; i < len(fsArr); i++ {
+    for i := 0; i < fsArrLen; i++ {
         fsSlashArr := strings.Split(fsArr[i], "/", -1)
 
         for j := pPos; j < len(fsSlashArr); j++ {
-            pClean = strings.Replace(strings.Replace(pArr[pPos], "?", "", -1), "*", "", -1)
-            fmt.Println("pClean: \t", pClean)
-
-            if strings.TrimSpace(pClean) == "" {
-                continue
-            }
-
-            if strings.Index(fsSlashArr[j], pClean) >= 0 {
+            if wildcardMatch(fsSlashArr[j], pArr[pPos]) {
+                fmt.Println("Wildcard Match!")
                 retArr = append(retArr, fsArr[i])
             }
         }
     }
 
-    if fsArrLen == len(retArr) {
+    if fsArrLen >= len(retArr) {
         return recursiveMatch(retArr, pArr, pPos + 1)
     }
 
