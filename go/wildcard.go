@@ -21,6 +21,7 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
     }
 
     fmt.Println("--- NEW FIND...")
+    fmt.Println("pattArr[0]", pattArr[0])
     fmt.Println("fsArr:", fsArr)
     fmt.Println("pattArr:", pattArr)
 
@@ -41,10 +42,9 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
 
 // Matches a given string against a wildcard pattern
 func wildcardMatch(text string, pattern string) bool {
-    var cards []string
+    cards := strings.Split(pattern, "*", -1);
 
-    starCards := strings.Split(pattern, "*", -1);
-
+    /*
     for _, sc := range starCards {
         scQuestionMark := strings.Split(sc, "?", -1)
 
@@ -52,6 +52,7 @@ func wildcardMatch(text string, pattern string) bool {
             cards = append(cards, splitSc)
         }
     }
+    */
 
     fmt.Println("WC Cards:", cards)
 
@@ -62,7 +63,7 @@ func wildcardMatch(text string, pattern string) bool {
             return false
         }
 
-        text = strings.TrimLeft(text, str)
+        text = strings.TrimLeft(text, str + "*")
     }
 
     return true
