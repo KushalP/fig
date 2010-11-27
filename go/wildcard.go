@@ -7,6 +7,8 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
 	var fsArr []string
 	var pattArr []string
 
+    fmt.Println("--- NEW FIND...")
+
 	// Wildcard matching method here
 	if strings.Contains(pattern, "/") {
 		pattArr = strings.Split(pattern, "/", -1)
@@ -15,12 +17,13 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
 	}
 
 	fsArr, _ = fs.List(baseDir)
+    fmt.Println("#1 fsArr:", fsArr)
 
 	if len(fsArr) <= 0 {
-		fsArr, _ = fs.List(pattArr[0])
+		fsArr, _ = fs.List(trimWildcardRight(pattArr[0]))
+        fmt.Println("#2 fsArr:", fsArr)
 	}
 
-	fmt.Println("--- NEW FIND...")
 	fmt.Println("pattArr[0]", pattArr[0])
 	fmt.Println("fsArr:", fsArr)
 	fmt.Println("pattArr:", pattArr)
@@ -38,6 +41,16 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
 	}
 
 	return matches
+}
+
+// Strips away the string to find the first complete string
+func trimWildcardRight(str string) string {
+    var splitStr []string
+
+    splitStr = strings.Split(str, "*", -1)
+    splitStr = strings.Split(splitStr[0], "?", -1)
+
+    return splitStr[0]
 }
 
 // Matches a given string against a wildcard pattern
