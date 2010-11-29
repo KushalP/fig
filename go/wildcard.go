@@ -9,6 +9,18 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
 
     fmt.Println("--- NEW FIND...")
 
+    // Deal with patterns that don't have wildcards quickly
+    if !hasWildcards(pattern) {
+        // We've got a direct file, not a directory structure
+        if !strings.Contains(pattern, "/") && fs.Exists(pattern) {
+            return []string{pattern}
+        }
+
+        // We've got a directory structure
+        withoutWildcards, _ := fs.List(pattern)
+        return withoutWildcards
+    }
+
 	// Wildcard matching method here
 	if strings.Contains(pattern, "/") {
 		pattArr = strings.Split(pattern, "/", -1)
@@ -19,7 +31,7 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
 	fsArr, _ = fs.List(baseDir)
     fmt.Println("#1 fsArr:", fsArr)
 
-	if len(fsArr) <= 0 {
+	if len(fsArr) <= 0 && baseDir == "" {
 		fsArr, _ = fs.List(trimWildcardRight(pattArr[0]))
         fmt.Println("#2 fsArr:", fsArr)
 	}
@@ -31,7 +43,8 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
 
 	matches := recursiveMatch(fsArr, pattArr, 0)
 
-	if baseDir != "" {
+	// Strip out baseDir from the return array since we know it already
+    if baseDir != "" {
 		var retArr []string
 
 		for _, m := range matches {
@@ -42,6 +55,11 @@ func findFiles(fs FileSystem, baseDir string, pattern string) []string {
 	}
 
 	return matches
+}
+
+// Are we dealing with a pattern using wildcards?
+func hasWildcards(pattern string) bool {
+    return strings.IndexAny(pattern, "*?") != -1
 }
 
 // Strips away the string to find the first complete string
