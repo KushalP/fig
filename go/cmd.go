@@ -48,12 +48,12 @@ func ParseArgs(args []string) (Command, os.Error) {
 		return parsePublishArgs(iter)
 	case "repo":
 		return parseRepoArgs(iter)
-/*
-    case "retrieve":
-        return parseRetrieve(iter)
-    case "run":
-        return parseRun(iter)
-*/
+		/*
+		   case "retrieve":
+		       return parseRetrieve(iter)
+		   case "run":
+		       return parseRun(iter)
+		*/
 	}
 
 	return nil, os.NewError(fmt.Sprintf("Unknown command: %s", args[1]))

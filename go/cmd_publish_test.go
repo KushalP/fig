@@ -39,7 +39,7 @@ end
 		t.Fatal(err)
 	}
 
-	expected := NewPackageBuilder("foo","1.2.3").Name("foo", "1.2.3").Config("default").Set("FOO","BAR").End().Build()
+	expected := NewPackageBuilder("foo", "1.2.3").Name("foo", "1.2.3").Config("default").Set("FOO", "BAR").End().Build()
 
 	checkPackage(t, expected, pkg)
 }
@@ -72,7 +72,7 @@ end
 
 	checkPackageStatements(t, expected.Statements, stmts)
 
-	checkArchive(t, r, map[string]string{"foo.txt":"foo contents"})
+	checkArchive(t, r, map[string]string{"foo.txt": "foo contents"})
 }
 
 /*
@@ -108,7 +108,7 @@ end
 }
 */
 
-func checkArchive(t *testing.T, r PackageReader, files map[string] string) {
+func checkArchive(t *testing.T, r PackageReader, files map[string]string) {
 	in, err := r.OpenArchive()
 	if err != nil {
 		t.Fatal(err)
@@ -126,7 +126,7 @@ func checkArchive(t *testing.T, r PackageReader, files map[string] string) {
 		if err == os.EOF {
 			break
 		}
-//		println("*" + header.Name)
+		// println("*" + header.Name)
 		if err != nil {
 			t.Fatalf("archive.Next(): %s", err)
 		}
@@ -134,14 +134,14 @@ func checkArchive(t *testing.T, r PackageReader, files map[string] string) {
 		if !ok {
 			t.Fatalf("unexpected file in archive: %s", header.Name)
 		}
-		
+
 		files[header.Name] = "", false
 
 		actual, err := ioutil.ReadAll(archive)
 		if err != nil {
 			t.Fatal(err)
 		}
-		
+
 		if string(actual) != expected {
 			t.Fatalf("expected: '%s', got: '%s'", expected, string(actual))
 		}

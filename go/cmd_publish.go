@@ -94,8 +94,8 @@ func copyToArchive(ctx *Context, path string, archive *tar.Writer) os.Error {
 			panic(err)
 		}
 		for _, child := range children {
-//			println("archiving child: " + child)
-			copyToArchive(ctx, path + "/" + child, archive)
+			// println("archiving child: " + child)
+			copyToArchive(ctx, path+"/"+child, archive)
 		}
 	} else {
 		size, err := ctx.fs.Size(path)
@@ -103,7 +103,7 @@ func copyToArchive(ctx *Context, path string, archive *tar.Writer) os.Error {
 		if err != nil {
 			panic(err)
 		}
-		
+
 		header := &tar.Header{}
 		header.Name = path
 		header.Size = size
@@ -111,7 +111,7 @@ func copyToArchive(ctx *Context, path string, archive *tar.Writer) os.Error {
 		if err != nil {
 			panic(err)
 		}
-		
+
 		io.Copy(archive, in)
 	}
 	return nil
